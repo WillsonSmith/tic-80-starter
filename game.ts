@@ -16,14 +16,14 @@ interface GameState {
 }
 
 const gameState: GameState = {
-  player: new Block(84, 84, 6, 6, Color.Red),
-  enemies: [new Block(20, 20, 6, 6, Color.DarkGreen), new Block(200, 50, 6, 6, Color.LightBlue)],
+  player: new Block('player', 84, 84, 6, 6, Color.Red),
+  enemies: [new Block('enemy', 20, 20, 6, 6, Color.DarkGreen), new Block('enemy', 200, 50, 6, 6, Color.LightBlue)],
   walls: [
     // new Block(0, 0, 1, 136, Color.DarkGreen),
     // new Block(239, 0, 1, 136, Color.DarkGreen),
     // new Block(0, 0, 240, 1, Color.DarkGreen),
     // new Block(0, 135, 240, 1, Color.DarkGreen)
-    new Block(110, 110, 15, 15, Color.Yellow),
+    new Block('wall', 110, 110, 15, 15, Color.Yellow),
   ],
 }
 

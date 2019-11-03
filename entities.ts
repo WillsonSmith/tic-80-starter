@@ -16,6 +16,8 @@ function vectorBetween(pointOne: point, pointTwo: point) {
   };
 }
 
+type BlockType = 'player' | 'enemy' | 'wall';
+
 export class Block {
   observing: boolean = false;
   x: number;
@@ -25,16 +27,18 @@ export class Block {
   color: Color;
   moving: boolean = false;
   speed: number = 1;
-  targetInVision: boolean = false;
+  targetInVision: Block | null = null;
   rays: any[];
+  type: BlockType;
 
-  constructor(x: number, y: number, w: number, h: number, color: Color) {
+  constructor(type: BlockType, x: number, y: number, w: number, h: number, color: Color) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.color = color;
     this.rays = [];
+    this.type = type;
   }
 
   get bounds() {
@@ -62,14 +66,15 @@ export class Block {
 
   detect(blocks: Block[]) {
     this.observing = true;
-    this.targetInVision = false;
+    this.targetInVision = null;
     this.rays.forEach((ray) => {
+      let detected = []
       blocks.forEach((block) => {
         block.bounds.forEach((bound) => {
           const intersect = ray.cast(bound);
-          if (intersect) {
+          if (intersect && block.type === 'player') {
             ray.drawTo(intersect.x, intersect.y)
-            this.targetInVision = true;
+            this.targetInVision = block;
           }
         })
       })
