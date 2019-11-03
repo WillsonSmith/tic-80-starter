@@ -3,7 +3,6 @@
     "target": "es5",
     "lib": ["esnext"],
     "strict": true,
-    "removeComments": false
   },
   "tstl": {
     "luaTarget": "JIT",

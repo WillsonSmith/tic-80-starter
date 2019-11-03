@@ -3,9 +3,9 @@ import banner from 'rollup-plugin-banner';
 import minify from 'rollup-plugin-babel-minify';
 
 export default {
-  input: './game.ts',
+  input: './src/game.ts',
   output: {
-    file: 'game.js',
+    file: './build/game.js',
     format: 'esm',
   },
   treeshake: false,
