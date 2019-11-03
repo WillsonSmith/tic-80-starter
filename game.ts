@@ -23,7 +23,7 @@ const gameState: GameState = {
     // new Block(239, 0, 1, 136, Color.DarkGreen),
     // new Block(0, 0, 240, 1, Color.DarkGreen),
     // new Block(0, 135, 240, 1, Color.DarkGreen)
-    new Block('wall', 110, 110, 15, 15, Color.Yellow),
+    new Block('wall', 110, 0, 15, 110, Color.Yellow),
   ],
 }
 
@@ -52,6 +52,7 @@ function TIC() {
   walls.forEach(wall => wall.draw());
 
   enemies.forEach(enemy => {
+    enemy.speed = 0.5;
     enemy.draw();
     enemy.follow(player);
     enemy.detect([player].concat(walls));

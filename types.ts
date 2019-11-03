@@ -25,3 +25,5 @@ export enum Button {
   A = 4,
   B = 5,
 }
+
+export type Point = {x: number, y: number};

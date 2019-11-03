@@ -1,21 +1,11 @@
-import {Color} from './types';
+import {Color, Point} from './types';
 import {Ray} from './raycasting';
 
-type point = {x: number, y: number};
+import {distanceBetween, vectorBetween} from './util';
+
+declare function print(input: string, x?: number, y?: number): void;
 declare function rect(x: number, y: number, width: number, height: number, color: Color): null;
-
-function distanceBetween(toPoint: point) {
-  const {x, y} = toPoint;
-  return Math.sqrt(x * x + y * y)
-}
-
-function vectorBetween(pointOne: point, pointTwo: point) {
-  return {
-    toX: pointOne.x - pointTwo.x,
-    toY: pointOne.y - pointTwo.y,
-  };
-}
-
+declare function rectb(x: number, y: number, width: number, height: number, color: Color): null;
 type BlockType = 'player' | 'enemy' | 'wall';
 
 export class Block {
@@ -49,16 +39,16 @@ export class Block {
         b: {x: x + w, y},
       },
       {
-        a: {x, y},
-        b: {x, y: y + h}
+        a: {x: x + w, y},
+        b: {x: x + w, y: y + h}
       },
       {
         a: {x, y: y + h},
         b: {x: x + w, y: y + h}
       },
       {
-        a: {x: x + w, y},
-        b: {x: x + w, y: y + h}
+        a: {x, y: y + h},
+        b: {x, y}
       }
     ];
     return boundaries;
@@ -68,12 +58,24 @@ export class Block {
     this.observing = true;
     this.targetInVision = null;
     this.rays.forEach((ray) => {
-      let detected = []
+      let closest: [{a: Point, b: Point}, number] | null = null;
       blocks.forEach((block) => {
         block.bounds.forEach((bound) => {
           const intersect = ray.cast(bound);
-          if (intersect && block.type === 'player') {
-            ray.drawTo(intersect.x, intersect.y)
+          if (intersect /* && ray.rayLength(intersect) < 50 //vision */) {
+            const distance = ray.rayLength(intersect);
+            if (closest) {
+              if (distance < closest[1]) {
+                closest[0] = bound;
+                closest[1] = distance;
+              }
+            } else {
+              closest = [bound, distance];
+            }
+
+            if (closest[0] === bound) {
+              ray.drawTo(intersect.x, intersect.y);
+            }
             this.targetInVision = block;
           }
         })
@@ -86,11 +88,13 @@ export class Block {
     const centrePoint = {x: x + w/2, y: y + h/2};
     if (this.observing) {
       this.rays.length = 0;
-      for(let ray = 0; ray < 180; ray += 1) {
+      for(let ray = 0; ray < 180; ray += 5) {
         this.rays.push(new Ray({x: centrePoint.x, y: centrePoint.y}, ray));
       }
     }
-
+    if (this.type === 'wall') {
+      return rectb(x, y, w, h, color);
+    }
     return rect(x, y, w, h, color);
   }
 

@@ -1,7 +1,8 @@
-import {Color} from './types';
+import {Color, Point} from './types';
+import {distanceBetween, vectorBetween} from './util';
 
 declare function line(xStart: number, yStart: number, xEnd: number, yEnd: number, color: Color): null;
-type Point = {x: number, y: number};
+
 interface Wall {
   a: Point;
   b: Point;
@@ -27,6 +28,11 @@ export class Ray {
 
   drawTo(x: number, y: number) {
     line(this.position.x, this.position.y, x, y, Color.White);
+  }
+
+  rayLength(intersect: Point) {
+    const vec = vectorBetween({x: this.position.x, y: this.position.y}, intersect);
+    return distanceBetween({x: vec.toX, y: vec.toY});
   }
 
   draw() {
