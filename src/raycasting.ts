@@ -9,7 +9,7 @@ interface Wall {
 }
 
 function direction(angle: number) {
-  const radians = angle * (180 / Math.PI);
+  const radians = angle * (Math.PI / 180);
   return {x: Math.sin(radians), y: Math.cos(radians)};
 }
 

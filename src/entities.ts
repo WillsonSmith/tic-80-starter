@@ -88,7 +88,7 @@ export class Block {
     const centrePoint = {x: x + w/2, y: y + h/2};
     if (this.observing) {
       this.rays.length = 0;
-      for(let ray = 0; ray < 180; ray += 5) {
+      for(let ray = 0; ray < 360; ray += 5) {
         this.rays.push(new Ray({x: centrePoint.x, y: centrePoint.y}, ray));
       }
     }
