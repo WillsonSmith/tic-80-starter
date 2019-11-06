@@ -1,12 +1,7 @@
-import {Color, Point} from './types';
+import {Color, Point, Wall} from './types';
 import {distanceBetween, vectorBetween} from './util';
 
 declare function line(xStart: number, yStart: number, xEnd: number, yEnd: number, color: Color): null;
-
-interface Wall {
-  a: Point;
-  b: Point;
-}
 
 function direction(angle: number) {
   const radians = angle * (Math.PI / 180);

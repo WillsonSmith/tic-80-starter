@@ -27,3 +27,8 @@ export enum Button {
 }
 
 export type Point = {x: number, y: number};
+
+export interface Wall {
+  a: Point;
+  b: Point;
+}

@@ -1,4 +1,4 @@
-import {Color, Point} from './types';
+import {Color, Point, Wall} from './types';
 import {Ray} from './raycasting';
 
 import {distanceBetween, vectorBetween} from './util';
@@ -17,7 +17,7 @@ export class Block {
   color: Color;
   moving: boolean = false;
   speed: number = 1;
-  targetInVision: Block | null = null;
+  blocksInVision: Block[] = [];
   rays: any[];
   type: BlockType;
 
@@ -31,7 +31,7 @@ export class Block {
     this.type = type;
   }
 
-  get bounds() {
+  get bounds(): Wall[] {
     const {x, y, w, h} = this;
     const boundaries = [
       {
@@ -56,9 +56,9 @@ export class Block {
 
   detect(blocks: Block[]) {
     this.observing = true;
-    this.targetInVision = null;
+    this.blocksInVision.length = 0;
     this.rays.forEach((ray) => {
-      let closest: [{a: Point, b: Point}, number] | null = null;
+      let closest: [{a: Point, b: Point}, number, Point, Block] | null = null;
       blocks.forEach((block) => {
         block.bounds.forEach((bound) => {
           const intersect = ray.cast(bound);
@@ -68,18 +68,20 @@ export class Block {
               if (distance < closest[1]) {
                 closest[0] = bound;
                 closest[1] = distance;
+                closest[2] = intersect;
+                closest[3] = block;
               }
             } else {
-              closest = [bound, distance];
+              closest = [bound, distance, intersect, block];
             }
-
-            if (closest[0] === bound) {
-              ray.drawTo(intersect.x, intersect.y);
-            }
-            this.targetInVision = block;
           }
         })
       })
+      if (closest) {
+        const point: Point = closest[2];
+        ray.drawTo(point.x, point.y);
+        this.blocksInVision.push(closest[3]);
+      }
     })
   }
 
@@ -102,7 +104,7 @@ export class Block {
     const {x, y} = target;
     const toBlock = vectorBetween({x, y}, {x: this.x, y: this.y});
     const distToBlock = distanceBetween({x: toBlock.toX, y: toBlock.toY});
-    if (target.moving && this.targetInVision) {
+    if (target.moving && this.blocksInVision.indexOf(target) > -1) {
       this.x += toBlock.toX / distToBlock * this.speed;
       this.y += toBlock.toY / distToBlock * this.speed;
     }
