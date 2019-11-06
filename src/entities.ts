@@ -9,17 +9,18 @@ declare function rectb(x: number, y: number, width: number, height: number, colo
 type BlockType = 'player' | 'enemy' | 'wall';
 
 export class Block {
-  observing: boolean = false;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+  blocksInVision: Block[] = [];
   color: Color;
   moving: boolean = false;
-  speed: number = 1;
-  blocksInVision: Block[] = [];
+  observing: boolean = false;
   rays: any[];
+  speed: number = 1;
   type: BlockType;
+  vision: number = 75;
+  h: number;
+  w: number;
+  x: number;
+  y: number;
 
   constructor(type: BlockType, x: number, y: number, w: number, h: number, color: Color) {
     this.x = x;
@@ -79,8 +80,16 @@ export class Block {
       })
       if (closest) {
         const point: Point = closest[2];
-        ray.drawTo(point.x, point.y);
-        this.blocksInVision.push(closest[3]);
+        const block: Block = closest[3];
+        const distance = closest[1];
+        const isInVision = distance < this.vision;
+        if (isInVision) {
+          this.blocksInVision.push(block);
+        }
+
+        if (block.type === 'player') {
+          ray.drawTo(point.x, point.y, isInVision ? Color.Red : Color.White);
+        }
       }
     })
   }

@@ -21,8 +21,8 @@ export class Ray {
     this.direction = direction(angle);
   }
 
-  drawTo(x: number, y: number) {
-    line(this.position.x, this.position.y, x, y, Color.White);
+  drawTo(x: number, y: number, color?: Color) {
+    line(this.position.x, this.position.y, x, y, color || Color.White);
   }
 
   rayLength(intersect: Point) {
